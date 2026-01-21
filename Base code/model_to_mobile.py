@@ -3,7 +3,7 @@ import torch
 from TriAttentionArchitectura import WoodClassifierWithTriAttention
 
 # Ruta al modelo
-model_path_attention="Modelo_E11__CON_aumento_con_tri.pt"
+model_path_attention="Modelo_E12__CON_aumento_sin_tri.pt"
 
 # Cargar el modelo
 model = WoodClassifierWithTriAttention(num_classes=4, use_tri_attention=True)

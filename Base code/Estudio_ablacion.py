@@ -23,10 +23,10 @@ import scikit_posthocs as sp
 # Rutas
 path = "/home/daniel/Imágenes/Camera/TODO"
 metadata_file = 'metadata.csv'
-model_path="Modelo_E11__CON_aumento_sin_tri.pt"
-model_path_attention="Modelo_E11__CON_aumento_con_tri.pt"
 consideracion=["Con atencion", "Sin atencion"]
-indice = 1 # Controla el modelo a evaluar (modificar entre 0 o 1 según la variable "consideraciones")
+indice = 0 # Controla el modelo a evaluar (modificar entre 0 o 1 según la variable "consideraciones")
+model_path="Modelo_E12__CON_aumento_sin_tri.pt"
+model_path_attention="Modelo_E12__CON_aumento_con_tri.pt"
 
 # Configuración
 CLASS_NAMES = {
@@ -122,7 +122,8 @@ def cargar_modelo(path, tri=False):
         print(f"Error al cargar el modelo: {e}")
         return None
 
-model = cargar_modelo(model_path, tri=True if indice == 0 else False) # Modificar la variable indice para evaluar otro modelo 
+model = cargar_modelo(model_path, tri=False) # Sin atención 
+# model = cargar_modelo(model_path_attention, tri=True) # Con atención
 
 # Seleccionar device
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
@@ -188,9 +189,17 @@ calcular_metricas(all_labels, all_preds, matrix=True)
 print("-"*20)
 print()
 
+# Con atención
+# Accuracy: 0.7241
+# Precision: 0.7961
+# Recall: 0.7241
+# F1-score: 0.6666
 
-
-
+# Sin atención
+# Accuracy: 0.8103
+# Precision: 0.8260
+# Recall: 0.8103
+# F1-score: 0.8062
 
 
 # =============================================================
@@ -249,8 +258,8 @@ for i, subset in enumerate(subsets):
     f1_con_atencion.append(f1A)
     f1_sin_atencion.append(f1B)
 
-    # print("F1 del modelo con atención:", f1_con_atencion)
-    # print("F1 del modelo sin atención:", f1_sin_atencion)
+    print("F1 del modelo con atención:", f1_con_atencion)
+    print("F1 del modelo sin atención:", f1_sin_atencion)
 
 # Aplicación de Mann whitney
 stat, p = mannwhitneyu(f1_con_atencion, f1_sin_atencion, alternative='greater')
@@ -297,8 +306,6 @@ print("p-value (Stencion):", p_atencion)
 
 
 
-
-
 # DUNN TEST
 # Para modelo sin atención
 data_long_sin = pd.DataFrame({
@@ -341,8 +348,8 @@ data_atencion = pd.DataFrame({
 })
 
 # Concatenar ambos
-# data_plot = pd.concat([data_sin, data_atencion], axis=0)
-data_plot = pd.concat([data_atencion], axis=0)
+data_plot = pd.concat([data_sin, data_atencion], axis=0)
+# data_plot = pd.concat([data_atencion], axis=0)
 data_plot["ClaseNombre"] = data_plot["Clase"].map(CLASS_NAMES)
 
 # -----------------------------
@@ -356,13 +363,13 @@ sns.boxplot(
     y="F1", 
     hue="Modelo", 
     data=data_plot,
-    # palette=["#FF9999","#66B2FF"]
-    palette=["#FF9999"]
+    palette=["#FF9999","#66B2FF"]
+    # palette=["#FF9999"]
 )
 
 # Swarmplot con colores distintos según modelo
-# palette_swarm = {"Sin Atención": "#FF6666", "Con Atención": "#3399FF"}  # tonos más visibles
-palette_swarm = {"Con Atención": "#3399FF"}  # tonos más visibles
+palette_swarm = {"Sin Atención": "#FF6666", "Con Atención": "#3399FF"}  # tonos más visibles
+# palette_swarm = {"Con Atención": "#3399FF"}  # tonos más visibles
 sns.swarmplot(
     x="ClaseNombre", 
     y="F1", 
@@ -375,19 +382,20 @@ sns.swarmplot(
 )
 
 # Evitar doble leyenda
-# handles, labels = plt.gca().get_legend_handles_labels()
-# plt.legend(handles[:2], labels[:2], title="Modelo")
+handles, labels = plt.gca().get_legend_handles_labels()
+plt.legend(handles[:2], labels[:2], title="Modelo")
 plt.legend([], [], frameon=False) # sin labels
 
 # Ajustes finales
-# plt.title("Comparación de F1-score por clase entre modelos", fontsize=16)
-# plt.ylabel("F1-score", fontsize=12)
-# plt.xlabel("Clase de madera", fontsize=12)
+plt.title("Comparación de F1-score por clase entre modelos", fontsize=16)
+plt.ylabel("F1-score", fontsize=12)
+plt.xlabel("Clase de madera", fontsize=12)
 plt.ylabel("Precisión", fontsize=12)
 plt.xlabel("Especies", fontsize=12)
-plt.ylim(0.6,1)
+plt.ylim(0,1)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 
-path = os.path.join("Graficas/" + "boxplot_kruskel_solo_atencion.jpg")
+# path = os.path.join("Graficas/" + "boxplot_kruskel_solo_atencion.jpg")
+path = os.path.join("Graficas/" + "boxplot_kruskel.jpg")
 plt.savefig(path, format='png')  # Guarda como PNG
 print(f"Gráfico guardado como: {path}")
