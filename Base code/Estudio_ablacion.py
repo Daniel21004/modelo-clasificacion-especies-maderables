@@ -21,7 +21,7 @@ from scipy.stats import mannwhitneyu, kruskal
 import scikit_posthocs as sp
 
 # Rutas
-path = "/home/daniel/Imágenes/Camera/TODO"
+path = "/home/daniel/Documentos/Universidad/Revista/Dataset_entorno_abierto/TODO"
 metadata_file = 'metadata.csv'
 consideracion=["Con atencion", "Sin atencion"]
 indice = 0 # Controla el modelo a evaluar (modificar entre 0 o 1 según la variable "consideraciones")
@@ -149,7 +149,7 @@ def calcular_metricas(all_labels, all_preds, matrix=False):
         disp.plot(cmap="Blues")
         # Guardar grágica
         path = os.path.join("Graficas/", consideracion[indice] + "_Matriz.jpg")
-        plt.savefig(path, format='png')  # Guarda como PNG
+        # plt.savefig(path, format='png')  # Guarda como PNG
         print(f"Gráfico guardado como: {path}")
     
     return f1, recall, precision, accuracy
@@ -348,8 +348,8 @@ data_atencion = pd.DataFrame({
 })
 
 # Concatenar ambos
-data_plot = pd.concat([data_sin, data_atencion], axis=0)
-# data_plot = pd.concat([data_atencion], axis=0)
+# data_plot = pd.concat([data_sin, data_atencion], axis=0)
+data_plot = pd.concat([data_sin], axis=0)
 data_plot["ClaseNombre"] = data_plot["Clase"].map(CLASS_NAMES)
 
 # -----------------------------
@@ -363,13 +363,13 @@ sns.boxplot(
     y="F1", 
     hue="Modelo", 
     data=data_plot,
-    palette=["#FF9999","#66B2FF"]
-    # palette=["#FF9999"]
+    # palette=["#FF9999","#66B2FF"]
+    palette=["#FF9999"]
 )
 
 # Swarmplot con colores distintos según modelo
-palette_swarm = {"Sin Atención": "#FF6666", "Con Atención": "#3399FF"}  # tonos más visibles
-# palette_swarm = {"Con Atención": "#3399FF"}  # tonos más visibles
+# palette_swarm = {"Sin Atención": "#FF6666", "Con Atención": "#3399FF"}  # tonos más visibles
+palette_swarm = {"Sin Atención": "#FF6666",}  # tonos más visibles
 sns.swarmplot(
     x="ClaseNombre", 
     y="F1", 
@@ -392,10 +392,10 @@ plt.ylabel("F1-score", fontsize=12)
 plt.xlabel("Clase de madera", fontsize=12)
 plt.ylabel("Precisión", fontsize=12)
 plt.xlabel("Especies", fontsize=12)
-plt.ylim(0,1)
+plt.ylim(0.3,1)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 
-# path = os.path.join("Graficas/" + "boxplot_kruskel_solo_atencion.jpg")
-path = os.path.join("Graficas/" + "boxplot_kruskel.jpg")
-plt.savefig(path, format='png')  # Guarda como PNG
+path = os.path.join("Graficas/" + "boxplot_kruskel_solo_atencion.jpg")
+# path = os.path.join("Graficas/" + "boxplot_kruskel.jpg")
+# plt.savefig(path, format='png')  # Guarda como PNG
 print(f"Gráfico guardado como: {path}")
