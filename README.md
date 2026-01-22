@@ -36,4 +36,4 @@ Igualmente recuerde que los dos necesitan un metadata.csv con estructura diferen
 - Tiempo inferencia CPU: 77.589MS
 
 # Lista a YouTube con la explicación del código
-[TIC](https://www.youtube.com/playlist?list=PLEAWdbRe4WpwOWMbVbT4Xuv2qdZooxo-l)
+[Presiona para acceder a la lista de reproducción](https://www.youtube.com/playlist?list=PLEAWdbRe4WpwOWMbVbT4Xuv2qdZooxo-l)
